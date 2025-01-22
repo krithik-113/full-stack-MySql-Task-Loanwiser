@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  background-color: lightgray;
+}
+#pop-up {
+  left: 35%;
+}
+#header {
+  background-color: lightgray;
+}
+
+.documents {
+  width: 90%;
+  margin: auto;
+}
+.left-side {
+  width: fit-content;
+}
+#header-doc {
+  width: 100%;
+}
+.right-side {
+  border: 1px solid;
+}
+.right-side article {
+  justify-content: start;
+  min-height: 300px;
+}
+.img-div {
+  display: flex;
+  align-items: center;
+}
+article {
+  flex-direction: column-reverse;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 250px 90%;
+}
+img {
+  width: 100px;
+}
+.status.pending {
+  margin-left: 15px;
+  background-color: orange;
+  padding: 7px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+.status.success {
+  margin-left: 15px;
+  background-color: green;
+  padding: 7px;
+  border-radius: 5px;
+  font-weight: 700;
+  color: white;
+}
+#disable {
+  opacity: 0.3;
+  cursor: default;
+}
+footer{
+  width: 90%;
+  >button{
+    cursor: pointer;
+  }
+}
+/* // Nav links */
+.apps.active {
+  text-decoration: underline;
+  text-decoration-thickness: 5px;
+}
+.doc.active{
+  background: #0b52d4;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.hoo:hover{
+  opacity: 0.5;
+}
+#doc:hover{
+  opacity: 0.7;
+}
