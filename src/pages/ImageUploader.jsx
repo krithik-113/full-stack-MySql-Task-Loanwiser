@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import ImagePreview from "../view/ImagePreview";
 import { FaX } from "react-icons/fa6";
 
 const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
   const [image, setImage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const data = Applicants.find((app) => app.id === appId)?.documents?.find(
-    (doc) => doc.id === DocumentsID
-  )?.uploaded;
+    (doc) => doc.id === DocumentsID)?.uploaded;
   const isUploaded = false;
 
   // updating Documents in documents field from (Applicants Array) for Single Data-Set
@@ -44,16 +44,19 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
   };
   const handleImages = (uploadImg, status) => {
     if (!data?.length && !uploadImg) return;
+    status && setIsLoading(true);
     let s = uploadImg.size / 1024;
     if (status && data?.length) {
-      updatingData_Set(
-        data?.map((imageUpload) => {
-          if (imageUpload.status === false) {
-            return { ...imageUpload, status: true };
-          }
-          return imageUpload;
-        })
-      );
+    
+        updatingData_Set(
+          data?.map((imageUpload) => {
+            if (imageUpload.status === false) {
+              return { ...imageUpload, status: true };
+            }
+            return imageUpload;
+          })
+        );
+        setTimeout(()=>setIsLoading(false),3000)
     } else {
       if (data?.length) {
         data.push({
@@ -75,20 +78,22 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
       }
     }
     status && setImage(false);
+   
   };
   //  deleting X symbol
   const deletingRecordsByX = (id) => {
     updatingData_Set(data.filter((_) => _.id !== id));
     setImage(false);
   };
-
   return (
     <div className="position-relative right-side">
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="d-flex position-sticky top-0 gap-2 bg-secondary"
+        className="d-flex position-relative top-0 gap-2 bg-secondary"
         id="header-doc"
       >
+        <span className={`normal ${isLoading ? "loading" : "w-0"}`}></span>
+
         <label className="btn btn-primary ml-3 px-5 my-3" htmlFor="file">
           Choose
         </label>
@@ -113,7 +118,7 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
           Cancel
         </button>
       </form>
-
+      {isLoading ? <p className="load">Loading...</p> : <></>}
       {/* -------------------------------------Image Preview ----------------------------------------- */}
 
       <article className="d-flex flex-col m-5 pt-5">

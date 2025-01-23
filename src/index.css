@@ -25,6 +25,9 @@ html {
 }
 .right-side {
   border: 1px solid;
+  > p {
+    text-align: center;
+  }
 }
 .right-side article {
   justify-content: start;
@@ -63,27 +66,49 @@ img {
   opacity: 0.3;
   cursor: default;
 }
-footer{
+footer {
   width: 90%;
-  >button{
+  > button {
     cursor: pointer;
   }
 }
 /* // Nav links */
 .apps.active {
   text-decoration: underline;
-  text-decoration-thickness: 5px;
+  text-decoration-thickness: 3px;
+  color: #0312b2 !important;
 }
-.doc.active{
+.doc.active {
   background: #0b52d4;
   border-radius: 10px;
   color: white;
   font-weight: bold;
   letter-spacing: 2px;
 }
-.hoo:hover{
+.hoo:hover {
   opacity: 0.5;
 }
-#doc:hover{
+#doc:hover {
   opacity: 0.7;
+}
+
+/* // loading */
+
+.normal {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  background: #03b252;
+  height: 5px;
+  
+}
+.loading{
+  width: 100%;
+  transition:all 3s ease;
+}
+.load{
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-family: sans-serif;
 }

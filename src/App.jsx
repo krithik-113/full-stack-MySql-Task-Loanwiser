@@ -1,73 +1,81 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { FaPlus,FaTrash } from "react-icons/fa";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import AddApplicants from "./components/AddApplicants";
-import Footer from './pages/Footer';
-import AddDocuments from './components/AddDocuments';
-import DocumentTitle from './view/DocumentTitle';
-import ImageUploader from './pages/ImageUploader';
+import Footer from "./pages/Footer";
+import AddDocuments from "./components/AddDocuments";
+import DocumentTitle from "./view/DocumentTitle";
+import ImageUploader from "./pages/ImageUploader";
 const App = () => {
-  const [Applicants, setApplicants] = useState([])
+  const [Applicants, setApplicants] = useState([]);
   const [showDocuments, setShowDocuments] = useState([]);
-  
-  const [disableUploader,setDisableUploader] = useState(true)
 
-  const [showPopUp, setShowPopUp] = useState(false)
-  const [docPopup, setDocPopup] = useState(false)
+  const [disableUploader, setDisableUploader] = useState(true);
 
-  const [appId, setAppId] = useState("")
-  const [DocumentsID, setDocumentsID] = useState("")
-  
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [docPopup, setDocPopup] = useState(false);
+
+  const [appId, setAppId] = useState("");
+  const [DocumentsID, setDocumentsID] = useState("");
+
   const applicantRef = useRef([]);
-   const docRef = useRef([]);
+  const docRef = useRef([]);
 
-  const handleDocSelected = (id,i) => {
-     setDocumentsID(id)
-     if (docRef.current[i]) {
-       docRef.current[i].classList.add("active");
-     }
-     for (let index = 0; index < docRef.current.length; index++) {
-       if (index !== i) {
-         docRef.current[index]?.classList.remove("active");
-       }
-     }
-   };
-
-  const applicantSelected = (id,i) => {
-    setAppId(id)
-    if (applicantRef.current[i]) {
-      applicantRef.current[i].classList.add('active')
+  const handleDocSelected = (id, i) => {
+    setDocumentsID(id);
+    if (docRef.current[i]) {
+      docRef.current[i].classList.add("active");
     }
-    for (let index = 0; index < applicantRef.current.length; index++){
+    for (let index = 0; index < docRef.current.length; index++) {
       if (index !== i) {
-        applicantRef.current[index].classList.remove('active')
+        docRef.current[index]?.classList.remove("active");
       }
     }
-  }
+  };
+
+  const applicantSelected = (id, i) => {
+    setAppId(id);
+
+    if (applicantRef.current[i]) {
+      applicantRef.current[i].classList.add("active");
+      for (let index = 0; index < applicantRef.current.length; index++) {
+        if (index !== i) {
+          applicantRef.current[index].classList.remove("active");
+        }
+      }
+    }
+  };
 
   const handlePopup_DisableDocx = () => {
     setDisableUploader(false);
-    !showPopUp && !docPopup && setDocPopup(!docPopup)
-    
-  }
+    !showPopUp && !docPopup && setDocPopup(!docPopup);
+  };
   const handlePopupsApp_DisableDocx = () => {
-    setDisableUploader(false)
-    !docPopup && !showPopUp && setShowPopUp(!showPopUp)
-  }
-  
+    setDisableUploader(false);
+    !docPopup && !showPopUp && setShowPopUp(!showPopUp);
+  };
+
   const handleDeleteApplicants = (id) => {
-    const DeletedApplicamts = Applicants.filter(_ => _.id !== id)
-    DeletedApplicamts.length !== 0 ?setAppId(DeletedApplicamts[0].id) : setAppId("");
-    setApplicants(DeletedApplicamts)
-  }
+    const DeletedApplicamts = Applicants.filter((_) => _.id !== id);
+    DeletedApplicamts.length !== 0
+      ? setAppId(DeletedApplicamts[0].id)
+      : setAppId("");
+    setApplicants(DeletedApplicamts);
+  };
   useEffect(() => {
-   const fetchDocuments = () => {
-     const findedDocs = Applicants.find((doc) => doc.id === appId);
-     findedDocs ? setShowDocuments(findedDocs.documents) : setShowDocuments([])
-   };
-   fetchDocuments();
-  }, [Applicants, appId])
-  
-  
+    const fetchDocuments = () => {
+      const findedDocs = Applicants.find((app) => app.id === appId);
+      findedDocs?.documents?.length
+        ? setShowDocuments(findedDocs.documents)
+        : setShowDocuments([]);
+    };
+    fetchDocuments();
+    const docSelector = Applicants.find(app=>app.id===appId)?.documents
+    if (docSelector?.length) {
+      handleDocSelected(docSelector[0].id,0)
+    }
+    
+  }, [Applicants, appId]);
+
   return (
     <div className="position-relative mt-4" id="header">
       <div className="d-flex justify-content-between w-auto m-auto p-5">
@@ -87,7 +95,7 @@ const App = () => {
             <p
               style={{ cursor: "pointer", userSelect: "none" }}
               className={`mx-2 text-primary font-weight-bold p-4 rounded overflowX-scroll apps ${
-                i === 0 ? "active" : ""
+                i === Applicants.length - 1 ? "active" : ""
               }`}
               key={_.id}
               ref={(input) => (applicantRef.current[i] = input)}
@@ -140,9 +148,11 @@ const App = () => {
                   {showDocuments?.map((_, i) => (
                     <p
                       key={_.id}
-                      onClick={() => handleDocSelected(_.id,i)}
+                      onClick={() => handleDocSelected(_.id, i)}
                       ref={(input) => (docRef.current[i] = input)}
-                      className={` text-start my-3 py-3 text-center doc ${ i === 0 ? "active" : "" }`}
+                      className={` text-start my-3 py-3 text-center doc ${
+                        i === 0 ? "active" : ""
+                      }`}
                       style={{ cursor: "pointer" }}
                       id="doc"
                     >
@@ -172,6 +182,7 @@ const App = () => {
               <ImageUploader
                 appId={appId}
                 DocumentsID={DocumentsID}
+                handleDocSelected={handleDocSelected}
                 Applicants={Applicants}
                 setApplicants={setApplicants}
               />
@@ -184,10 +195,16 @@ const App = () => {
         )}
       </div>
 
-      <Footer />
+      <Footer
+        Applicants={Applicants}
+        appId={appId}
+        DocumentsID={DocumentsID}
+        applicantSelected={applicantSelected}
+        handleDocSelected={handleDocSelected}
+      />
       <hr />
     </div>
   );
-}
+};
 
-export default App
+export default App;
