@@ -23,7 +23,7 @@ const App = () => {
   const handleDocSelected = (id, i) => {
     setDocumentsID(id);
     if (docRef.current[i]) {
-      docRef.current[i].classList.add("active");
+      docRef.current[i]?.classList.add("active");
     }
     for (let index = 0; index < docRef.current.length; index++) {
       if (index !== i) {
@@ -36,10 +36,10 @@ const App = () => {
     setAppId(id);
 
     if (applicantRef.current[i]) {
-      applicantRef.current[i].classList.add("active");
+      applicantRef.current[i]?.classList.add("active");
       for (let index = 0; index < applicantRef.current.length; index++) {
         if (index !== i) {
-          applicantRef.current[index].classList.remove("active");
+          applicantRef.current[index]?.classList.remove("active");
         }
       }
     }
