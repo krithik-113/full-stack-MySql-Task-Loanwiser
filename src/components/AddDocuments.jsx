@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { FaCheck } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
+import React, { useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { FaX } from "react-icons/fa6";
 import { v4 as uuidv4 } from "uuid";
 
 const AddDocuments = ({
@@ -18,12 +18,12 @@ const AddDocuments = ({
     if (!doc) return;
     const docsAdded = Applicants.map((applicant) => {
       if (applicant.id === id) {
+        //  document ID created
+        let docId = uuidv4();
         if (applicant.documents?.length) {
-          let docId = uuidv4()
           setDocumentsID(docId);
           applicant.documents.push({ id: docId, name: doc });
         } else {
-          let docId = uuidv4();
           setDocumentsID(docId);
           applicant.documents = [{ id: docId, name: doc }];
         }
@@ -33,13 +33,13 @@ const AddDocuments = ({
     });
     setApplicants(docsAdded);
     setDocPopup(false);
-    setDisableUploader(true)
+    setDisableUploader(true);
   };
 
   const handleDocPopUp = () => {
-    setDocPopup(!docPopup)
-    setDisableUploader(true)
-  }
+    setDocPopup(!docPopup);
+    setDisableUploader(true);
+  };
 
   return (
     <form
@@ -79,4 +79,4 @@ const AddDocuments = ({
   );
 };
 
-export default AddDocuments
+export default AddDocuments;

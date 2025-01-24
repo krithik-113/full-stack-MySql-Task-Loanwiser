@@ -106,7 +106,7 @@ footer {
   text-align: center;
 }
 #pop-up{
-  width: 50%;
+  width: 500px;
 }
 
 /* // loading */
@@ -184,8 +184,8 @@ footer {
   }
   .img-name {
     margin-left: 0;
-    font-size: 0.5rem;
-    font-weight: 100;
+    font-size: 1rem;
+    font-weight: 700;
   }
   .spacing {
     top: 40%;
@@ -203,13 +203,11 @@ footer {
   }
   .status.pending {
     padding: 1px;
-    font-weight: 100;
-    font-size: 0.4rem;
+    font-size: 1rem;
   }
   .status.success {
     padding: 1px;
-    font-weight: 100;
-    font-size: 0.3rem;
+    font-size: 1rem;
   }
   .btns {
     margin: 5px 0;

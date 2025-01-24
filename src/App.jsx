@@ -90,7 +90,7 @@ const App = () => {
             <p
               style={{ cursor: "pointer", userSelect: "none" }}
               className={`mx-2 text-primary font-weight-bold p-4 rounded overflowX-scroll apps ${
-                i === Applicants.length - 1 ? "active" : ""
+                _.id === appId ? "active" : ""
               }`}
               key={_.id}
               ref={(input) => (applicantRef.current[i] = input)}
@@ -121,7 +121,7 @@ const App = () => {
         />
       )}
 
-      {/* -------------------------------------------Documents --------------------------------------------------*/}
+      {/* -------------------------------------------Documents Popups --------------------------------------------------*/}
       {docPopup && (
         <AddDocuments
           setDocumentsID={setDocumentsID}
@@ -136,16 +136,18 @@ const App = () => {
       <div className="documents">
         {Applicants?.length ? (
           <div className={`${showDocuments?.length ? "grid" : ""}`}>
-            {/* -------------------------------------------Left side --------------------------------------------------*/}
+            {/* -------------------------------------------Left side  Documents Names --------------------------------------------------*/}
             <div className="left-side">
-              {Applicants?.length === 0 || showDocuments?.length ? (
+              {showDocuments?.length ? (
                 <>
-                  {showDocuments?.map((_, i) => (
+                  {showDocuments.map((_, i) => (
                     <p
                       key={_.id}
                       onClick={() => handleDocSelected(_.id, i)}
                       ref={(input) => (docRef.current[i] = input)}
-                      className=" my-3 py-3 doc"
+                      className={`my-3 py-3 doc ${
+                        _.id === DocumentsID ? "active" : ""
+                      }`}
                       style={{ cursor: "pointer" }}
                       id="doc"
                     >
@@ -173,9 +175,9 @@ const App = () => {
             {/* -------------------------------------------Right Side --------------------------------------------------*/}
             {showDocuments?.length && disableUploader ? (
               <ImageUploader
+                handleDocSelected={handleDocSelected}
                 appId={appId}
                 DocumentsID={DocumentsID}
-                handleDocSelected={handleDocSelected}
                 Applicants={Applicants}
                 setApplicants={setApplicants}
               />

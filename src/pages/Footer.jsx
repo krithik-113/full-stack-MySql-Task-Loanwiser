@@ -11,34 +11,36 @@ const Footer = ({
 
   const preSelection = () => {
     if (appId) {
-      const data = docData?.findIndex((doc) => doc.id === DocumentsID);
+      const data = docData?.findIndex(docIndex => docIndex.id === DocumentsID)
       if (data && data - 1 >= 0) {
-        handleDocSelected(docData[data - 1].id, data - 1);
+        handleDocSelected(docData[data-1].id,data-1)
       } else {
-        const preApplicantIndex =
-          Applicants.findIndex((appindex) => appindex.id === appId) - 1;
-        if (preApplicantIndex >= 0) {
-          const prevmove = Applicants[preApplicantIndex]?.id;
-
-          const lastDoc = Applicants.find(
-            (app) => app.id === prevmove
-          )?.documents;
-          if (lastDoc?.length && lastDoc.length - 1 >= 0) {
-            applicantSelected(prevmove, preApplicantIndex);
-            handleDocSelected(
-              lastDoc[lastDoc.length - 1].id,
-              lastDoc.length - 1
-            );
+        const preApp = Applicants.findIndex(appIndex => appIndex.id === appId) - 1
+        if (preApp >= 0) {
+          const premove = Applicants[preApp]?.id 
+          applicantSelected(premove,preApp)
+          if (premove) {
+              const prevMoveDocxs = Applicants.find((app) => app.id === premove)?.documents;
+              const findingDocIndex = prevMoveDocxs?.length ?prevMoveDocxs.length-1:-1;
+              findingDocIndex && handleDocSelected(prevMoveDocxs[findingDocIndex].id,findingDocIndex);
+            
           }
         } else {
-          applicantSelected(
-            Applicants[Applicants.length - 1].id,
-            Applicants.length - 1
-          );
+          // last Applicant & last Documents-----------------------------------------------------
+          const lastApplicant = Applicants[Applicants.length - 1]?.id
+          if (lastApplicant !== appId) {
+            applicantSelected(lastApplicant, Applicants.length - 1);
+          }
+          
+          const lastDocxs = Applicants[Applicants.length - 1]?.documents
+          if (lastDocxs?.length) {
+            handleDocSelected(lastDocxs[lastDocxs.length-1].id,lastDocxs.length-1)
+          }
+          // -----------------------------------------------------------------------------------
         }
       }
     }
-  };
+  }
   const postSelection = () => {
     if (appId) {
       const data = docData?.findIndex((doc) => doc.id === DocumentsID);
@@ -50,8 +52,17 @@ const Footer = ({
         const checkingApplicantExists = Applicants[nextApplicant]?.id;
         if (checkingApplicantExists) {
           applicantSelected(checkingApplicantExists, nextApplicant);
+          const nextDoc = Applicants[nextApplicant]?.documents
+          if (nextDoc?.length) {
+            handleDocSelected(nextDoc[0].id,0)
+          }
         } else {
           applicantSelected(Applicants[0].id, 0);
+          const startingDoc = Applicants[0]?.documents;
+          if (startingDoc?.length) {
+            handleDocSelected(startingDoc[0].id, 0);
+          }
+
         }
       }
     }

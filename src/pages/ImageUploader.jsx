@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImagePreview from "../view/ImagePreview";
 import { FaX } from "react-icons/fa6";
 
-const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
+const ImageUploader = ({handleDocSelected, appId, DocumentsID, Applicants, setApplicants }) => {
   const [image, setImage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const data = Applicants.find((app) => app.id === appId)?.documents?.find(
@@ -31,8 +31,15 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
   };
 
   const handleOnChangeEve = (e) => {
-    setImage(e.target.files[0]);
-    handleImages(e.target.files[0], isUploaded);
+    const currentUploades = Applicants.find(
+      (app) => app.id === appId
+    )?.documents;
+    if (currentUploades?.length) {
+      handleDocSelected(currentUploades[0].id,0)
+      setImage(e.target.files[0]);
+      handleImages(e.target.files[0], isUploaded);
+    } else {
+    }
   };
 
   const handleCancelDocUpload = () => {
