@@ -32,9 +32,12 @@ const App = () => {
     }
   };
 
-  const applicantSelected = (id, i) => {
+  const applicantSelected = (id, i,overide = true) => {
     setAppId(id);
-
+    const data = Applicants.find(app => app.id === id)?.documents 
+    if (overide && data?.length) {
+      handleDocSelected(data[0].id,0)
+    }
     if (applicantRef.current[i]) {
       applicantRef.current[i]?.classList.add("active");
       for (let index = 0; index < applicantRef.current.length; index++) {

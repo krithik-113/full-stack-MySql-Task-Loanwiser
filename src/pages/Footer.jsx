@@ -12,17 +12,21 @@ const Footer = ({
   const preSelection = () => {
     if (appId) {
       const data = docData?.findIndex(docIndex => docIndex.id === DocumentsID)
-      if (data && data - 1 >= 0) {
+      if (data - 1 >= 0) {
         handleDocSelected(docData[data-1].id,data-1)
       } else {
         const preApp = Applicants.findIndex(appIndex => appIndex.id === appId) - 1
         if (preApp >= 0) {
           const premove = Applicants[preApp]?.id 
-          applicantSelected(premove,preApp)
+          
           if (premove) {
-              const prevMoveDocxs = Applicants.find((app) => app.id === premove)?.documents;
-              const findingDocIndex = prevMoveDocxs?.length ?prevMoveDocxs.length-1:-1;
-              findingDocIndex && handleDocSelected(prevMoveDocxs[findingDocIndex].id,findingDocIndex);
+            applicantSelected(premove, preApp,false);
+            const prevMoveDocxs = Applicants.find((app) => app.id === premove)?.documents;
+            if (prevMoveDocxs?.length) {
+              const findingDocIndex = prevMoveDocxs.length-1
+              handleDocSelected(prevMoveDocxs[findingDocIndex].id,findingDocIndex);
+            }
+              
             
           }
         } else {
