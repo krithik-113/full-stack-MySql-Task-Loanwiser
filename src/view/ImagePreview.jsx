@@ -2,10 +2,10 @@ import React from 'react'
 
 const ImagePreview = ({image,size,status}) => {
   return (
-    <div className="w-100 p-2 border-top border-bottom">
-      <h5 className="ml-3 ">{image?.name} </h5>
+    <div className="p-2 border-top border-bottom" id='doc-cont'>
+      <h5 className="img-name ">{image?.name} </h5>
       {image ? (
-        <h5 className="ml-3 ">
+        <h5 className="img-name ">
           {size ? size + " KB" : ""}
 
           {size ? (

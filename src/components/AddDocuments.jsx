@@ -44,10 +44,10 @@ const AddDocuments = ({
   return (
     <form
       onSubmit={handleOnSubmit}
-      className="position-absolute z-10 top-25 left-50 z-10 w-25 mx-auto bg-white"
+      className="top-50 z-10 mx-auto bg-white"
       id="pop-up"
     >
-      <div className="d-flex justify-content-between p-3">
+      <div className="d-flex p-3 justify-content-between">
         <h2 className="">Add</h2>
         <h5
           style={{ cursor: "pointer", marginTop: "5px" }}
@@ -67,7 +67,7 @@ const AddDocuments = ({
           required
         />
       </div>
-      <div className="d-flex p-3 justify-content-end">
+      <div className="d-flex p-3 popping">
         <button className="btn btn-primary m-2" type="submit">
           <FaCheck /> Save
         </button>

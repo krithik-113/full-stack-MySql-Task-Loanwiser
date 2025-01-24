@@ -72,11 +72,11 @@ const App = () => {
   }, [Applicants, appId]);
 
   return (
-    <div className="position-relative mt-4" id="header">
-      <div className="d-flex justify-content-between w-auto m-auto p-5">
-        <h1>Document Upload</h1>
+    <div className="position-relative h-100" id="header">
+      <div className="d-flex justify-content-around w-auto m-auto">
+        <h1 className="heading mt-4">Document Upload</h1>
         <button
-          className="btn btn-primary"
+          className="btn btn-primary mt-4"
           onClick={handlePopupsApp_DisableDocx}
         >
           <FaPlus /> Add Applicant
@@ -145,7 +145,7 @@ const App = () => {
                       key={_.id}
                       onClick={() => handleDocSelected(_.id, i)}
                       ref={(input) => (docRef.current[i] = input)}
-                      className='text-start my-3 py-3 text-center doc'
+                      className=" my-3 py-3 doc"
                       style={{ cursor: "pointer" }}
                       id="doc"
                     >
@@ -157,10 +157,10 @@ const App = () => {
                       className="d-flex btn btn-primary text-end my-5 w-100"
                       onClick={handlePopup_DisableDocx}
                     >
-                      <span className="mx-3">
+                      <span className="doc-add-btn">
                         <FaPlus />
                       </span>{" "}
-                      <span className="mr-4">Add</span>
+                      <span className="doc-add-btn">Add</span>
                     </button>
                   ) : (
                     <></>

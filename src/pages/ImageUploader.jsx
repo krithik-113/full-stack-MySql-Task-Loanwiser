@@ -93,12 +93,12 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
       >
         <span className={`normal ${isLoading ? "loading" : "w-0"}`}></span>
 
-        <label className="btn btn-primary ml-3 px-5 my-3" htmlFor="file">
+        <label className="btn btn-primary ml-3 px-5  btns" htmlFor="file">
           Choose
         </label>
         <input onChange={handleOnChangeEve} id="file" type="file" hidden />
         <button
-          className="btn btn-primary ml-3 px-5 my-3"
+          className="btn btn-primary ml-3 px-5  btns"
           id={`${
             image || data?.find((stat) => stat.status === false)
               ? ""
@@ -110,7 +110,7 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
           Upload
         </button>
         <button
-          className="btn btn-primary ml-3 px-5 my-3"
+          className="btn btn-primary ml-3 px-5 btns"
           id={`${image ? "" : "disable"}`}
           onClick={handleCancelDocUpload}
         >
@@ -120,7 +120,7 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
       {isLoading ? <p className="load">Loading...</p> : <></>}
       {/* -------------------------------------Image Preview ----------------------------------------- */}
 
-      <article className="d-flex flex-col m-5 pt-5">
+      <article className="d-flex flex-col pt-5 article">
         {data?.length ? (
           data.map((_, i) => (
             <span
@@ -137,12 +137,10 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
               <ImagePreview image={_.image} size={_.size} status={_.status} />
               <div
                 style={{
-                  right: "50px",
-                  top: "40%",
                   cursor: "pointer",
                   color: "red",
                 }}
-                className="position-absolute"
+                className="position-absolute spacing"
               >
                 <FaX onClick={() => deletingRecordsByX(_.id)} />
               </div>

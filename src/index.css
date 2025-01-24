@@ -5,11 +5,22 @@
 }
 html {
   background-color: lightgray;
+  height: 100vh;
+}
+body {
+  height: 100%;
+}
+#root {
+  
+  height: 100%;
 }
 #pop-up {
   left: 35%;
+  top: 35%;
+  position: absolute;
 }
 #header {
+  
   background-color: lightgray;
 }
 
@@ -91,6 +102,12 @@ footer {
 #doc:hover {
   opacity: 0.7;
 }
+#doc {
+  text-align: center;
+}
+#pop-up{
+  width: 50%;
+}
 
 /* // loading */
 
@@ -101,14 +118,100 @@ footer {
   width: 0;
   background: #03b252;
   height: 5px;
-  
 }
-.loading{
+.loading {
   width: 100%;
-  transition:all 3s ease;
+  transition: all 3s ease;
 }
-.load{
+.load {
   font-weight: 800;
   letter-spacing: 3px;
   font-family: sans-serif;
+}
+.doc-add-btn {
+  margin: 0 1rem;
+}
+.img-name {
+  margin-left: 1rem;
+}
+.spacing {
+  top: 40%;
+  right: 50px;
+}
+.popping {
+  justify-content: end;
+}
+.btns {
+  margin: 1rem 0;
+}
+.article {
+  margin: 1rem;
+}
+.close{
+  justify-content: space-between;
+}
+/* -------------------------------mobile view layout----------------------------------- */
+
+@media (max-width: 600px) {
+  #root{
+    width: 100vh;
+  }
+  #why {
+    font-size: 1rem;
+  }
+  .popping {
+    justify-content: start;
+  }
+  .article {
+    margin: 0;
+  }
+  .heading {
+    font-size: 1.5rem;
+  }
+  #pop-up {
+    left: 0;
+    width: 100%;
+  }
+  #header-doc {
+    flex-direction: column;
+  }
+  .grid {
+    grid-template-columns: 100px 60%;
+    gap: 5px;
+  }
+  .btns {
+    width: 80%;
+  }
+  .img-name {
+    margin-left: 0;
+    font-size: 0.5rem;
+    font-weight: 100;
+  }
+  .spacing {
+    top: 40%;
+    right: 10px;
+  }
+  .doc-add-btn {
+    margin: 0 0;
+  }
+  #doc {
+    letter-spacing: 0;
+  }
+  .left-side {
+    width: 100px;
+    overflow-x: auto;
+  }
+  .status.pending {
+    padding: 1px;
+    font-weight: 100;
+    font-size: 0.4rem;
+  }
+  .status.success {
+    padding: 1px;
+    font-weight: 100;
+    font-size: 0.3rem;
+  }
+  .btns {
+    margin: 5px 0;
+  }
 }
