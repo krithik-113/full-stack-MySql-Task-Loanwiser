@@ -69,11 +69,6 @@ const App = () => {
         : setShowDocuments([]);
     };
     fetchDocuments();
-    const docSelector = Applicants.find(app=>app.id===appId)?.documents
-    if (docSelector?.length) {
-      handleDocSelected(docSelector[0].id,0)
-    }
-    
   }, [Applicants, appId]);
 
   return (
@@ -150,9 +145,7 @@ const App = () => {
                       key={_.id}
                       onClick={() => handleDocSelected(_.id, i)}
                       ref={(input) => (docRef.current[i] = input)}
-                      className={` text-start my-3 py-3 text-center doc ${
-                        i === 0 ? "active" : ""
-                      }`}
+                      className='text-start my-3 py-3 text-center doc'
                       style={{ cursor: "pointer" }}
                       id="doc"
                     >

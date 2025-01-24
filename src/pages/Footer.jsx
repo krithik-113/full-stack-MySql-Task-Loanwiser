@@ -8,41 +8,51 @@ const Footer = ({
   applicantSelected,
 }) => {
   const docData = Applicants.find((app) => app.id === appId)?.documents;
-  
+
   const preSelection = () => {
     if (appId) {
       const data = docData?.findIndex((doc) => doc.id === DocumentsID);
-      if (docData?.length && data - 1 >= 0) {
+      if (data && data - 1 >= 0) {
         handleDocSelected(docData[data - 1].id, data - 1);
       } else {
-        const preApplicantIndex = Applicants.findIndex((appindex) => appindex.id === appId) - 1;
+        const preApplicantIndex =
+          Applicants.findIndex((appindex) => appindex.id === appId) - 1;
         if (preApplicantIndex >= 0) {
           const prevmove = Applicants[preApplicantIndex]?.id;
-          applicantSelected(prevmove, preApplicantIndex);
-          const lastDoc = Applicants.find(app=>app.id===prevmove)?.documents 
-          if (lastDoc?.length && lastDoc.length > 1) {
-            handleDocSelected(lastDoc[lastDoc.length-1].id,lastDoc.length-1)
+
+          const lastDoc = Applicants.find(
+            (app) => app.id === prevmove
+          )?.documents;
+          if (lastDoc?.length && lastDoc.length - 1 >= 0) {
+            applicantSelected(prevmove, preApplicantIndex);
+            handleDocSelected(
+              lastDoc[lastDoc.length - 1].id,
+              lastDoc.length - 1
+            );
           }
         } else {
-          applicantSelected(Applicants[Applicants.length-1].id,Applicants.length-1)
+          applicantSelected(
+            Applicants[Applicants.length - 1].id,
+            Applicants.length - 1
+          );
         }
       }
     }
   };
   const postSelection = () => {
     if (appId) {
-      const data = docData?.findIndex(doc=>doc.id===DocumentsID)
+      const data = docData?.findIndex((doc) => doc.id === DocumentsID);
       if (docData?.length && data + 1 < docData.length) {
-        handleDocSelected(docData[data+1].id,data+1)
+        handleDocSelected(docData[data + 1].id, data + 1);
       } else {
-        const nextApplicant = Applicants.findIndex(appIndex => appIndex.id === appId) + 1
-        const checkingApplicantExists = Applicants[nextApplicant]?.id
+        const nextApplicant =
+          Applicants.findIndex((appIndex) => appIndex.id === appId) + 1;
+        const checkingApplicantExists = Applicants[nextApplicant]?.id;
         if (checkingApplicantExists) {
-          applicantSelected(checkingApplicantExists,nextApplicant)
+          applicantSelected(checkingApplicantExists, nextApplicant);
         } else {
-          applicantSelected(Applicants[0].id,0)
+          applicantSelected(Applicants[0].id, 0);
         }
-
       }
     }
   };

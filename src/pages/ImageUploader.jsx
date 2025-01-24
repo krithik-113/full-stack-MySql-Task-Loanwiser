@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import ImagePreview from "../view/ImagePreview";
 import { FaX } from "react-icons/fa6";
 
@@ -6,7 +6,8 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
   const [image, setImage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const data = Applicants.find((app) => app.id === appId)?.documents?.find(
-    (doc) => doc.id === DocumentsID)?.uploaded;
+    (doc) => doc.id === DocumentsID
+  )?.uploaded;
   const isUploaded = false;
 
   // updating Documents in documents field from (Applicants Array) for Single Data-Set
@@ -47,16 +48,15 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
     status && setIsLoading(true);
     let s = uploadImg.size / 1024;
     if (status && data?.length) {
-    
-        updatingData_Set(
-          data?.map((imageUpload) => {
-            if (imageUpload.status === false) {
-              return { ...imageUpload, status: true };
-            }
-            return imageUpload;
-          })
-        );
-        setTimeout(()=>setIsLoading(false),3000)
+      updatingData_Set(
+        data?.map((imageUpload) => {
+          if (imageUpload.status === false) {
+            return { ...imageUpload, status: true };
+          }
+          return imageUpload;
+        })
+      );
+      setTimeout(() => setIsLoading(false), 3000);
     } else {
       if (data?.length) {
         data.push({
@@ -78,7 +78,6 @@ const ImageUploader = ({ appId, DocumentsID, Applicants, setApplicants }) => {
       }
     }
     status && setImage(false);
-   
   };
   //  deleting X symbol
   const deletingRecordsByX = (id) => {
