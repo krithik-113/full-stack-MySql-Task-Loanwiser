@@ -11,7 +11,6 @@ body {
   height: 100%;
 }
 #root {
-  
   height: 100%;
 }
 #pop-up {
@@ -20,7 +19,6 @@ body {
   position: absolute;
 }
 #header {
-  
   background-color: lightgray;
 }
 
@@ -105,7 +103,7 @@ footer {
 #doc {
   text-align: center;
 }
-#pop-up{
+#pop-up {
   width: 500px;
 }
 
@@ -147,13 +145,42 @@ footer {
 .article {
   margin: 1rem;
 }
-.close{
+.close {
   justify-content: space-between;
 }
+
+/* ---------------------------------------Login / register froms designs ------------------------------------------ */
+nav{
+  background-color: #563d7c;
+  color: #fff;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+
+}
+nav ul{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+nav li{
+  list-style: none;
+}
+nav li a{
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 8px;
+}
+nav li a:hover{
+  text-decoration: none;
+  color: yellow;
+}
+
 /* -------------------------------mobile view layout----------------------------------- */
 
 @media (max-width: 600px) {
-  #root{
+  #root {
     width: 100vh;
   }
   #why {

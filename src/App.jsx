@@ -1,207 +1,33 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaPlus, FaTrash } from "react-icons/fa";
-import AddApplicants from "./components/AddApplicants";
-import Footer from "./pages/Footer";
-import AddDocuments from "./components/AddDocuments";
-import DocumentTitle from "./view/DocumentTitle";
-import ImageUploader from "./pages/ImageUploader";
+import React from "react";
+
+import { Route, Routes, Link } from "react-router-dom";
+import Login from "./view/Login";
+import Register from "./view/Register";
+import Home from "./components/Home";
 const App = () => {
-  const [Applicants, setApplicants] = useState([]);
-  const [showDocuments, setShowDocuments] = useState([]);
-
-  const [disableUploader, setDisableUploader] = useState(true);
-
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [docPopup, setDocPopup] = useState(false);
-
-  const [appId, setAppId] = useState("");
-  const [DocumentsID, setDocumentsID] = useState("");
-
-  const applicantRef = useRef([]);
-  const docRef = useRef([]);
-
-  const handleDocSelected = (id, i) => {
-    setDocumentsID(id);
-    if (docRef.current[i]) {
-      docRef.current[i]?.classList.add("active");
-    }
-    for (let index = 0; index < docRef.current.length; index++) {
-      if (index !== i) {
-        docRef.current[index]?.classList.remove("active");
-      }
-    }
-  };
-
-  const applicantSelected = (id, i,overide = true) => {
-    setAppId(id);
-    const data = Applicants.find(app => app.id === id)?.documents 
-    if (overide && data?.length) {
-      handleDocSelected(data[0].id,0)
-    }
-    if (applicantRef.current[i]) {
-      applicantRef.current[i]?.classList.add("active");
-      for (let index = 0; index < applicantRef.current.length; index++) {
-        if (index !== i) {
-          applicantRef.current[index]?.classList.remove("active");
-        }
-      }
-    }
-  };
-
-  const handlePopup_DisableDocx = () => {
-    setDisableUploader(false);
-    !showPopUp && !docPopup && setDocPopup(!docPopup);
-  };
-  const handlePopupsApp_DisableDocx = () => {
-    setDisableUploader(false);
-    !docPopup && !showPopUp && setShowPopUp(!showPopUp);
-  };
-
-  const handleDeleteApplicants = (id) => {
-    const DeletedApplicamts = Applicants.filter((_) => _.id !== id);
-    DeletedApplicamts.length !== 0
-      ? setAppId(DeletedApplicamts[0].id)
-      : setAppId("");
-    setApplicants(DeletedApplicamts);
-  };
-  useEffect(() => {
-    const fetchDocuments = () => {
-      const findedDocs = Applicants.find((app) => app.id === appId);
-      findedDocs?.documents?.length
-        ? setShowDocuments(findedDocs.documents)
-        : setShowDocuments([]);
-    };
-    fetchDocuments();
-  }, [Applicants, appId]);
-
   return (
-    <div className="position-relative h-100" id="header">
-      <div className="d-flex justify-content-around w-auto m-auto">
-        <h1 className="heading mt-4">Document Upload</h1>
-        <button
-          className="btn btn-primary mt-4"
-          onClick={handlePopupsApp_DisableDocx}
-        >
-          <FaPlus /> Add Applicant
-        </button>
-      </div>
+    <>
+      <nav>
+        <h4>Image Uploader</h4>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/register">Register</Link>
+          </li>
+        </ul>
+      </nav>
 
-      {/* --------------------------------------Applicants Names -----------------------------------------------*/}
-      <div className="d-flex gap-2">
-        {Applicants.map((_, i) => (
-          <div key={i} className="d-flex align-items-center">
-            <p
-              style={{ cursor: "pointer", userSelect: "none" }}
-              className={`mx-2 text-primary font-weight-bold p-4 rounded overflowX-scroll apps ${
-                _.id === appId ? "active" : ""
-              }`}
-              key={_.id}
-              ref={(input) => (applicantRef.current[i] = input)}
-              onClick={() => applicantSelected(_.id, i)}
-            >
-              {_.name}{" "}
-            </p>
-            <p
-              onClick={() => handleDeleteApplicants(_.id)}
-              className="bg-primary p-2 rounded hoo"
-              style={{ cursor: "pointer" }}
-            >
-              <FaTrash className="trash" style={{ color: "red" }} />
-            </p>
-          </div>
-        ))}
-      </div>
-      <hr />
-
-      {/* -------------------------------------------Pop-Ups to Add Applicants & Documents --------------------------------------------------*/}
-      {showPopUp && (
-        <AddApplicants
-          setDisableUploader={setDisableUploader}
-          setAppId={setAppId}
-          showPopUp={showPopUp}
-          setShowPopUp={setShowPopUp}
-          setApplicants={setApplicants}
-        />
-      )}
-
-      {/* -------------------------------------------Documents Popups --------------------------------------------------*/}
-      {docPopup && (
-        <AddDocuments
-          setDocumentsID={setDocumentsID}
-          setDisableUploader={setDisableUploader}
-          id={appId}
-          Applicants={Applicants}
-          docPopup={docPopup}
-          setDocPopup={setDocPopup}
-          setApplicants={setApplicants}
-        />
-      )}
-      <div className="documents">
-        {Applicants?.length ? (
-          <div className={`${showDocuments?.length ? "grid" : ""}`}>
-            {/* -------------------------------------------Left side  Documents Names --------------------------------------------------*/}
-            <div className="left-side">
-              {showDocuments?.length ? (
-                <>
-                  {showDocuments.map((_, i) => (
-                    <p
-                      key={_.id}
-                      onClick={() => handleDocSelected(_.id, i)}
-                      ref={(input) => (docRef.current[i] = input)}
-                      className={`my-3 py-3 doc ${
-                        _.id === DocumentsID ? "active" : ""
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      id="doc"
-                    >
-                      {_.name}
-                    </p>
-                  ))}
-                  {showDocuments?.length ? (
-                    <button
-                      className="d-flex btn btn-primary text-end my-5 w-100"
-                      onClick={handlePopup_DisableDocx}
-                    >
-                      <span className="doc-add-btn">
-                        <FaPlus />
-                      </span>{" "}
-                      <span className="doc-add-btn">Add</span>
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              ) : (
-                <DocumentTitle docPopup={docPopup} setDocPopup={setDocPopup} />
-              )}
-            </div>
-            {/* -------------------------------------------Right Side --------------------------------------------------*/}
-            {showDocuments?.length && disableUploader ? (
-              <ImageUploader
-                handleDocSelected={handleDocSelected}
-                appId={appId}
-                DocumentsID={DocumentsID}
-                Applicants={Applicants}
-                setApplicants={setApplicants}
-              />
-            ) : (
-              <></>
-            )}
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-
-      <Footer
-        Applicants={Applicants}
-        appId={appId}
-        DocumentsID={DocumentsID}
-        applicantSelected={applicantSelected}
-        handleDocSelected={handleDocSelected}
-      />
-      <hr />
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </>
   );
 };
 
