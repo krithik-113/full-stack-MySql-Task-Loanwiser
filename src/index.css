@@ -4,7 +4,6 @@
   box-sizing: border-box;
 }
 html {
-  background-color: lightgray;
   height: 100vh;
 }
 body {
@@ -17,11 +16,8 @@ body {
   left: 35%;
   top: 35%;
   position: absolute;
+  background-color: lightgray
 }
-#header {
-  background-color: lightgray;
-}
-
 .documents {
   width: 90%;
   margin: auto;

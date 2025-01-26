@@ -26,7 +26,7 @@ const AddApplicants = ({
   return (
     <form
       onSubmit={handleOnSubmit}
-      className=" top-50 z-10 mx-auto bg-white"
+      className=" top-50 z-10 mx-auto"
       id="pop-up"
     >
       <div className="d-flex p-3 justify-content-between">
