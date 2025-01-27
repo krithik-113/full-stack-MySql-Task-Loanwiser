@@ -1,37 +1,38 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { v4 as uuidv4 } from "uuid";
+import { ImageUploaderDatas } from "./context API/DocumentsContext";
 
-const AddDocuments = ({
-  setDisableUploader,
-  setDocumentsID,
-  id,
-  Applicants,
-  setApplicants,
-  setDocPopup,
-  docPopup,
-}) => {
+const AddDocuments = () => {
+  const {
+    setDocumentsID,
+    setDisableUploader,
+    docPopup,
+    appId,
+    setDocPopup,
+    fetchDocuments,
+  } = useContext(ImageUploaderDatas);
   const [doc, setDoc] = useState("");
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit =async (e) => {
     e.preventDefault();
     if (!doc) return;
-    const docsAdded = Applicants.map((applicant) => {
-      if (applicant.id === id) {
-        //  document ID created
-        let docId = uuidv4();
-        if (applicant.documents?.length) {
-          setDocumentsID(docId);
-          applicant.documents.push({ id: docId, name: doc });
-        } else {
-          setDocumentsID(docId);
-          applicant.documents = [{ id: docId, name: doc }];
+    try {
+      if(appId){
+      const { data } = await axios.post("/document/addDocument", {appId,documentName:doc});
+      if (data.success) {
+        setDocumentsID(data.docId)
+        fetchDocuments(appId)
         }
-        return applicant;
+      } else {
+        
+        alert('Select Appliacnt to add documents')
       }
-      return applicant;
-    });
-    setApplicants(docsAdded);
+    } catch (err) {
+      console.log(err.message)
+    }
+    
     setDocPopup(false);
     setDisableUploader(true);
   };

@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import { FaCheck, FaX } from "react-icons/fa6";
 import {v4 as uuidv4} from 'uuid'
+import { ImageUploaderDatas } from "./context API/DocumentsContext";
 
-const AddApplicants = ({
-  setDisableUploader,
-  showPopUp,
-  setShowPopUp,
-  setApplicants,
-  setAppId,
-}) => {
+const AddApplicants = () => {
   const [name, setName] = useState("");
-  const handleOnSubmit = (e) => {
+
+  const {
+    getApplicants,
+    setDisableUploader,
+    showPopUp,
+    setShowPopUp,
+    setAppId,
+  } = useContext(ImageUploaderDatas);
+
+  const handleOnSubmit = async(e) => {
     e.preventDefault();
     if (!name) return;
-    let id = uuidv4()
-    setAppId(id)
-    setApplicants((prev) => [...prev, { id, name }]);
+    try {
+       const { data } = await axios.post("/applicant/addApplicant",{applicant:name},{headers:{token:localStorage.getItem('token')}});
+      if (data.success) {
+      setAppId(data.id);
+      getApplicants()
+    }
+    } catch (err) {
+      console.log(err.message) 
+    }
+    
+    
     setShowPopUp(false);
     setDisableUploader(true)
   };

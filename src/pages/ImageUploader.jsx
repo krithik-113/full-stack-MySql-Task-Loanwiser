@@ -1,100 +1,122 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ImagePreview from "../view/ImagePreview";
 import { FaX } from "react-icons/fa6";
+import axios from "axios";
+import { ImageUploaderDatas } from "../components/context API/DocumentsContext";
+import Loading from "../view/Loading";
 
-const ImageUploader = ({handleDocSelected, appId, DocumentsID, Applicants, setApplicants }) => {
+const ImageUploader = () => {
+  const { imageUploaded, DocumentsID, appId, getAllImagesUploaded } =
+    useContext(ImageUploaderDatas);
   const [image, setImage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const data = Applicants.find((app) => app.id === appId)?.documents?.find(
-    (doc) => doc.id === DocumentsID
-  )?.uploaded;
-  const isUploaded = false;
+  const [imageId, setImageId] = useState(0);
 
-  // updating Documents in documents field from (Applicants Array) for Single Data-Set
-  const updatingData_Set = (data = []) => {
-    const updatedApplicants = Applicants.map((app) => {
-      if (app.id === appId) {
-        return {
-          ...app,
-          documents: app.documents?.map((doc) => {
-            if (doc.id === DocumentsID) {
-              return { ...doc, uploaded: data };
-            }
-            return doc;
-          }),
-        };
-      }
-      return app;
-    });
+  const [uploadbtn, setUploadBtn] = useState(false);
 
-    setApplicants(updatedApplicants);
-  };
+  const [stat, setStat] = useState(false);
+  const sta = imageUploaded?.filter((img) => img.status === "Pending");
 
-  const handleOnChangeEve = (e) => {
-    const currentUploades = Applicants.find(
-      (app) => app.id === appId
-    )?.documents;
-    if (currentUploades?.length) {
-      handleDocSelected(currentUploades[0].id,0)
+  const handleOnChangeEve = async (e) => {
+    console.log(e.target.files[0]);
+    if (!e.target.files[0]) return;
+
+    const status = "Pending";
+
+    if (DocumentsID) {
+      setIsLoading(true);
+      setStat("Selecting Image To Upload...");
       setImage(e.target.files[0]);
-      handleImages(e.target.files[0], isUploaded);
+      setUploadBtn(true);
+      const formData = new FormData();
+      formData.append("appId", appId);
+      formData.append("docId", DocumentsID);
+      formData.append("status", status);
+      formData.append("image", e.target.files[0]);
+      try {
+        const { data } = await axios.post("/image-uploader/addImage", formData);
+        if (data.success) {
+          setImageId(data.imageId);
+          getAllImagesUploaded();
+          setStat("");
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
     } else {
+      alert("Select a Document to select image");
     }
   };
 
-  const handleCancelDocUpload = () => {
-    if (image) {
-      updatingData_Set(
-        data.filter((doc) => doc.image.lastModified !== image.lastModified)
-      );
-      setImage(false);
+  const handleImages = async (e) => {
+    if (sta?.length) {
+      setIsLoading(true);
+      setStat("Uploading Image...");
+      try {
+        const { data } = await axios.post("/image-uploader/change-status", {
+          docId: DocumentsID,
+        });
+        if (data.success) {
+          getAllImagesUploaded();
+          setStat("");
+          setIsLoading(false);
+          setUploadBtn(true);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    } else {
+      setUploadBtn(false);
     }
   };
-  const handleImages = (uploadImg, status) => {
-    if (!data?.length && !uploadImg) return;
-    status && setIsLoading(true);
-    let s = uploadImg.size / 1024;
-    if (status && data?.length) {
-      updatingData_Set(
-        data?.map((imageUpload) => {
-          if (imageUpload.status === false) {
-            return { ...imageUpload, status: true };
-          }
-          return imageUpload;
-        })
-      );
-      setTimeout(() => setIsLoading(false), 3000);
+
+  const handleCancelDocUpload = async (id, method) => {
+    if (!DocumentsID) return;
+    if (method === "cancel" && sta?.length) {
+      try {
+        const { data } = await axios.delete(
+          `/image-uploader/deleteImage/${id}`
+        );
+        if (data.success) {
+          getAllImagesUploaded();
+          setImage(false);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
     } else {
-      if (data?.length) {
-        data.push({
-          image: uploadImg,
-          size: s.toFixed(3),
-          id: data?.length,
-          status: status,
-        });
-        updatingData_Set(data);
-      } else {
-        updatingData_Set([
-          {
-            image: uploadImg,
-            size: s.toFixed(3),
-            id: 0,
-            status: status,
-          },
-        ]);
+      setImage(false)
+    }
+    if (method === "delete") {
+      try {
+        const { data } = await axios.delete(
+          `/image-uploader/deleteImage/${id}`
+        );
+        if (data.success) {
+          getAllImagesUploaded();
+          setImage(false);
+        }
+      } catch (err) {
+        console.log(err.message);
       }
     }
-    status && setImage(false);
   };
-  //  deleting X symbol
-  const deletingRecordsByX = (id) => {
-    updatingData_Set(data.filter((_) => _.id !== id));
-    setImage(false);
-  };
+
+  useEffect(() => {
+    if (imageUploaded?.length) {
+      let upload = imageUploaded.filter((img) => img.status === "Pending");
+      if (upload?.length) {
+        setUploadBtn(true);
+      } else {
+        setUploadBtn(false);
+      }
+    }
+  }, [getAllImagesUploaded]);
+
   return (
     <div className="position-relative right-side">
-      <form
-        onSubmit={(e) => e.preventDefault()}
+      <div
         className="d-flex position-relative top-0 gap-2 bg-secondary"
         id="header-doc"
       >
@@ -106,30 +128,25 @@ const ImageUploader = ({handleDocSelected, appId, DocumentsID, Applicants, setAp
         <input onChange={handleOnChangeEve} id="file" type="file" hidden />
         <button
           className="btn btn-primary ml-3 px-5  btns"
-          id={`${
-            image || data?.find((stat) => stat.status === false)
-              ? ""
-              : "disable"
-          }`}
-          type={`${image ? "submit" : ""}`}
-          onClick={() => handleImages(image, true)}
+          id={`${uploadbtn ? "" : "disable"}`}
+          onClick={handleImages}
         >
           Upload
         </button>
         <button
           className="btn btn-primary ml-3 px-5 btns"
           id={`${image ? "" : "disable"}`}
-          onClick={handleCancelDocUpload}
+          onClick={() => handleCancelDocUpload(imageId, "cancel")}
         >
           Cancel
         </button>
-      </form>
-      {isLoading ? <p className="load">Loading...</p> : <></>}
+      </div>
+      {isLoading ? <Loading text={stat} /> : <></>}
       {/* -------------------------------------Image Preview ----------------------------------------- */}
 
       <article className="d-flex flex-col pt-5 article">
-        {data?.length ? (
-          data.map((_, i) => (
+        {imageUploaded?.length ? (
+          imageUploaded.map((_, i) => (
             <span
               className="d-flex flex-col position-relative"
               key={i}
@@ -138,10 +155,14 @@ const ImageUploader = ({handleDocSelected, appId, DocumentsID, Applicants, setAp
               <div className="img-div">
                 <img
                   style={{ cursor: "not-allowed" }}
-                  src={_.image ? window.webkitURL.createObjectURL(_.image) : ""}
+                  src={_.imageURL ? _.imageURL : ""}
                 />
               </div>
-              <ImagePreview image={_.image} size={_.size} status={_.status} />
+              <ImagePreview
+                image={_.imageName}
+                size={_.size}
+                status={_.status}
+              />
               <div
                 style={{
                   cursor: "pointer",
@@ -149,7 +170,9 @@ const ImageUploader = ({handleDocSelected, appId, DocumentsID, Applicants, setAp
                 }}
                 className="position-absolute spacing"
               >
-                <FaX onClick={() => deletingRecordsByX(_.id)} />
+                <FaX
+                  onClick={() => handleCancelDocUpload(_.imageId, "delete")}
+                />
               </div>
             </span>
           ))

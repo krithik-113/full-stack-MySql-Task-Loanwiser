@@ -1,35 +1,25 @@
+
+import React, { useContext } from "react";
+import { ImageUploaderDatas } from "../components/context API/DocumentsContext";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [errorMsg,setErrMsg] = useState('')
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    passwordConfirm:"",
-  });
-  const navigate = useNavigate()
-
-  const handleInputChange = (e) => {
-    const name = e.target.name 
-    const value = e.target.value 
-    setForm(prev=>({...prev,[name]:value}))
-  }
-  const formData = async(e) => {
-    e.preventDefault()
-    try {
-      const { data } = await axios.post('/auth/register', form)
-      if (!data.success) {
-       return setErrMsg(data.message)
-      }
-      navigate('/')
-    } catch (err) {
-      console.log(err.message)
-    }
- //   setForm({ name: "", email: "", password: "", passwordConfirm:"" });
-  }
+  const { errorMsg, setErrMsg, form, handleInputChange, navigate,setToken } =
+    useContext(ImageUploaderDatas);
+ const formData = async (e) => {
+   e.preventDefault();
+   try {
+     const { data } = await axios.post("/auth/register", form);
+     if (!data.success) {
+       return setErrMsg(data.message);
+     }
+     setErrMsg(data.message);
+     navigate('/login')
+   } catch (err) {
+     console.log(err.message);
+   }
+   
+ };
   
   return (
     <>
@@ -104,7 +94,7 @@ const Register = () => {
             </form>
           </div>
         </div>
-       {errorMsg && <h4 className="alert alert-danger mt-4">{errorMsg}</h4>}
+       {errorMsg && <h4 className={`alert ${errorMsg==="Successfully Registered"?"alert-success":"alert-danger"} mt-4`}>{errorMsg}</h4>}
       </div>
     </>
   );

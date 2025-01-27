@@ -1,12 +1,18 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import axios from "axios";
+import React, { createContext, useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const ImageUploaderDatas = createContext({});
 
 const DocumentsContext = ({ children }) => {
+  const navigate = useNavigate();
   const [Applicants, setApplicants] = useState([]);
   const [showDocuments, setShowDocuments] = useState([]);
+  const [imageUploaded, setImageUploaded] = useState([]);
 
-  const [home, setHome] = useState(true);
+  const [token, setToken] = useState("");
+
+  const [errorMsg, setErrMsg] = useState("");
 
   const [disableUploader, setDisableUploader] = useState(true);
 
@@ -18,6 +24,19 @@ const DocumentsContext = ({ children }) => {
 
   const applicantRef = useRef([]);
   const docRef = useRef([]);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+
+  const handleInputChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleDocSelected = (id, i) => {
     setDocumentsID(id);
@@ -56,23 +75,95 @@ const DocumentsContext = ({ children }) => {
     !docPopup && !showPopUp && setShowPopUp(!showPopUp);
   };
 
-  const handleDeleteApplicants = (id) => {
-    const DeletedApplicamts = Applicants.filter((_) => _.id !== id);
-    DeletedApplicamts.length !== 0
-      ? setAppId(DeletedApplicamts[0].id)
-      : setAppId("");
-    setApplicants(DeletedApplicamts);
+  const logout = () => {
+    setToken("");
+    localStorage.removeItem("token");
+    navigate("/login");
+    setApplicants([]);
+    setShowDocuments([]);
+    setImageUploaded([]);
+  };
+  const handleDeleteApplicants = async (id) => {
+    try {
+      const { data } = await axios.delete(`/applicant/deleteApplicant/${id}`, {
+        headers: { token },
+      });
+      if (data.success) {
+        getApplicants();
+        setShowDocuments([]);
+        setImageUploaded([]);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const getApplicants = async () => {
+    try {
+      if (token) {
+        const { data } = await axios.get("/applicant", {
+          headers: { token },
+        });
+        if (data.success) {
+          setApplicants(data.applicants);
+          applicantSelected(data.applicants[0].appId,0);
+        } else {
+          setApplicants([]);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const fetchDocuments = async (id) => {
+    if (Applicants.length) {
+      try {
+        const { data } = await axios.post("/document", { appId :id ? id : appId});
+        if (data.success) {
+          setShowDocuments(data.documents)
+          return data.documents;
+        } else {
+          setShowDocuments([]);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+  }
+
+  const getAllImagesUploaded = async () => {
+    try {
+      const { data } = await axios.post("/image-uploader/getImages", {
+        docId: DocumentsID,
+      });
+      if (data.success) {
+        setImageUploaded(data.imagesUploaded);
+      } else {
+        setImageUploaded([]);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   };
   useEffect(() => {
-    const fetchDocuments = () => {
-      const findedDocs = Applicants.find((app) => app.id === appId);
-      findedDocs?.documents?.length
-        ? setShowDocuments(findedDocs.documents)
-        : setShowDocuments([]);
-    };
-    fetchDocuments();
-  }, [Applicants, appId]);
-
+    fetchDocuments(appId)
+  },[appId])
+ 
+  useEffect(() => {
+    if (showDocuments?.length) {
+      getAllImagesUploaded();
+    }
+  }, [DocumentsID]);
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    } else {
+      setToken(localStorage.getItem("token"));
+      getApplicants();
+      navigate("/");
+    }
+  }, [token]);
   const values = {
     Applicants,
     handlePopupsApp_DisableDocx,
@@ -89,12 +180,27 @@ const DocumentsContext = ({ children }) => {
     showDocuments,
     setDocPopup,
     applicantRef,
+    imageUploaded,
     docRef,
     setDocumentsID,
     handlePopup_DisableDocx,
     disableUploader,
     handleDeleteApplicants,
+    errorMsg,
+    setErrMsg,
+    form,
+    setForm,
+    handleInputChange,
+    navigate,
+    token,
+    setToken,
+    logout,
+    getApplicants,
+    fetchDocuments,
+    setShowDocuments,
+    getAllImagesUploaded,
   };
+
   return (
     <ImageUploaderDatas.Provider value={values}>
       {children}

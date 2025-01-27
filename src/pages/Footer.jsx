@@ -1,72 +1,74 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
+import { ImageUploaderDatas } from "../components/context API/DocumentsContext";
 
-const Footer = ({
-  Applicants,
-  appId,
-  DocumentsID,
-  handleDocSelected,
-  applicantSelected,
-}) => {
-  const docData = Applicants.find((app) => app.id === appId)?.documents;
+const Footer = () => {
+  const {
+    Applicants,
+    appId,
+    DocumentsID,
+    showDocuments,
+    handleDocSelected,
+    applicantSelected,
+    fetchDocuments,
+  } = useContext(ImageUploaderDatas);
 
-  const preSelection = () => {
+  const preSelection = async () => {
     if (appId) {
-      const data = docData?.findIndex(docIndex => docIndex.id === DocumentsID)
-      if (data - 1 >= 0) {
-        handleDocSelected(docData[data-1].id,data-1)
+      const data =
+        showDocuments?.findIndex((doc) => doc.docId === DocumentsID) - 1;
+      if (data >= 0) {
+        handleDocSelected(showDocuments[data].docId, data);
       } else {
-        const preApp = Applicants.findIndex(appIndex => appIndex.id === appId) - 1
-        if (preApp >= 0) {
-          const premove = Applicants[preApp]?.id 
-          
-          if (premove) {
-            applicantSelected(premove, preApp,false);
-            const prevMoveDocxs = Applicants.find((app) => app.id === premove)?.documents;
-            if (prevMoveDocxs?.length) {
-              const findingDocIndex = prevMoveDocxs.length-1
-              handleDocSelected(prevMoveDocxs[findingDocIndex].id,findingDocIndex);
+        const preApp = Applicants.findIndex((app) => app.appId === appId) - 1;
+        const premove = Applicants[preApp]?.appId;
+        if (preApp >= 0 && premove) {
+          applicantSelected(premove, preApp);
+          fetchDocuments(premove).then((res) => {
+            console.log(res.length - 1)
+            if (res?.length) {
+              handleDocSelected(res[res.length - 1].docId, res.length - 1);
             }
-              
-            
-          }
+          });
         } else {
           // last Applicant & last Documents-----------------------------------------------------
-          const lastApplicant = Applicants[Applicants.length - 1]?.id
+          const lastApplicant = Applicants[Applicants.length - 1]?.appId;
           if (lastApplicant !== appId) {
             applicantSelected(lastApplicant, Applicants.length - 1);
           }
-          
-          const lastDocxs = Applicants[Applicants.length - 1]?.documents
-          if (lastDocxs?.length) {
-            handleDocSelected(lastDocxs[lastDocxs.length-1].id,lastDocxs.length-1)
-          }
+          fetchDocuments(lastApplicant).then((res) => {
+            if (res?.length) {
+              handleDocSelected(res[res.length - 1].docId, res.length - 1);
+            }
+          });
           // -----------------------------------------------------------------------------------
         }
       }
     }
-  }
+  };
   const postSelection = () => {
     if (appId) {
-      const data = docData?.findIndex((doc) => doc.id === DocumentsID);
-      if (docData?.length && data + 1 < docData.length) {
-        handleDocSelected(docData[data + 1].id, data + 1);
+      const data =
+        showDocuments?.findIndex((doc) => doc.docId === DocumentsID) + 1;
+      if (data < showDocuments?.length) {
+        handleDocSelected(showDocuments[data].docId, data);
       } else {
         const nextApplicant =
-          Applicants.findIndex((appIndex) => appIndex.id === appId) + 1;
-        const checkingApplicantExists = Applicants[nextApplicant]?.id;
-        if (checkingApplicantExists) {
+          Applicants.findIndex((appIndex) => appIndex.appId === appId) + 1;
+        const checkingApplicantExists = Applicants[nextApplicant]?.appId;
+        if (nextApplicant < Applicants.length && checkingApplicantExists) {
           applicantSelected(checkingApplicantExists, nextApplicant);
-          const nextDoc = Applicants[nextApplicant]?.documents
-          if (nextDoc?.length) {
-            handleDocSelected(nextDoc[0].id,0)
-          }
+          fetchDocuments(checkingApplicantExists).then((res) => {
+            if (res?.length) {
+              handleDocSelected(res[0].docId, 0);
+            }
+          });
         } else {
-          applicantSelected(Applicants[0].id, 0);
-          const startingDoc = Applicants[0]?.documents;
-          if (startingDoc?.length) {
-            handleDocSelected(startingDoc[0].id, 0);
-          }
-
+          applicantSelected(Applicants[0].appId, 0);
+          fetchDocuments(Applicants[0].appId).then((res) => {
+            if (res?.length) {
+              handleDocSelected(res[0].docId, 0);
+            }
+          });
         }
       }
     }
